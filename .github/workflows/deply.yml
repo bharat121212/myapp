@@ -1,0 +1,29 @@
+name: Deploy to Ubuntu Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: SSH into Server & Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.50.17.97.172 }}
+        username: ubuntu
+        key: ${{ secrets.ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCgTKs1kebRghRZRyYjPSVy/hAe8C7PVZr8mXWkE/1bGjtxTlYPTQolk2TCYA9EdTqR0eU/1PKW0b/Mj8iCDMcxtMjoooRsRVKkfl+gGxNSqqQydP6AujtZO4/4yrkDTvX0zfT1v+oFbTPOoMdcbtOPS6lfc2HfFy3rzaAPhgqDP5/mLH32Q4w2kc/VUXayW2sBHyo8QSXbjpHpn5hjS4fJvgt0a/qPMpmaspPzgAnKUBEMOnFHzIbBFa2X0yEVCOck0L5hKM1cbyoXXd0ccgTLGrujawo11xFlKUHaLTRX3zHg7wuKsdHoNQNUwbT6dkq+XPlhHILB7XRzrmD6AiV3+9yVloTursl+RoFiAvq8kbqoq2M211IiimoNzL2PG8IU8CueolGSEW3Jn+kDBQRgHexvGK4iCLIWMN+BdjXAic94g2TX7STfPro6PlM9QXUJG0peLNw3ia+e3dVnr0osh+pEGIMiD5Rxljt5Ir4qO/Uv/pzDstPdp+NMuFhDO4Ha4W+dHp/ANH60K13sXxRp20qLxu1ouBHGWd2ZfQSVVihOm/TCqrBmHUYtoXCqgDQ3qer4IvdMgFw3VEyyzYoy7EoEd4I9mS0EiaDNm5aBvHhzmveXj0ZiGTHVLgUaQutbOfHB5k90jk3ifcUD4MENIvT1l+RIF3YST8/mLqMcuw== bharatvishwakarma12@gmail.com }}
+        script: |
+          cd /myapp
+          git pull origin main
+          docker build -t myapp .
+          docker stop myapp || true
+          docker rm myapp || true
+          docker run -d -p 8080:80 --name myapp myapp
+
