@@ -1,1 +1,4 @@
-<?php echo 'hello, ci/cd with linux; ?>
+<?php
+echo "Hello, AWS CodePipeline CI/CD!";
+?>
+
